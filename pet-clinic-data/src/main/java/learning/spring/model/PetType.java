@@ -1,4 +1,4 @@
-package spring.learning.sfgpetclinic.model;
+package learning.spring.model;
 
 public enum PetType {
     ;

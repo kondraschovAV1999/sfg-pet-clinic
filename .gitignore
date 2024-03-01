@@ -35,7 +35,7 @@ local.properties
 .settings/
 .loadpath
 .factorypath
-/pet-clinic-web/src/main/resources/rebel.xml
+/src/main/resources/rebel.xml
 
 # External tool builders
 .externalToolBuilders/**
@@ -67,14 +67,14 @@ local.properties
 ######################
 # Maven
 ######################
-/log/
-/target/
+**/log/
+**/target/
 
 ######################
 # Gradle
 ######################
 .gradle/
-/build/
+**/build/
 
 ######################
 # Package Files

@@ -1,7 +1,5 @@
 package learning.spring.bootstrap;
 
-import learning.spring.map.OwnerServiceMap;
-import learning.spring.map.VetServiceMap;
 import learning.spring.model.Owner;
 import learning.spring.model.Vet;
 import learning.spring.services.OwnerService;

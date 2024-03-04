@@ -22,6 +22,10 @@ public abstract class AbstractMapService<T extends BaseEntity, ID extends Number
 
     @Override
     public T save(T object) {
+
+        if (object == null) throw new RuntimeException("Object cannot be null");
+
+        if (object.getId() == null) object.setId(getNextId());
         map.put(object.getId(), object);
         return object;
     }
@@ -34,5 +38,14 @@ public abstract class AbstractMapService<T extends BaseEntity, ID extends Number
     @Override
     public void delete(T object) {
         map.entrySet().removeIf(e -> e.getValue().equals(object));
+    }
+
+    private Long getNextId() {
+
+        return map.keySet()
+                       .stream()
+                       .max(Comparator.comparingLong(Number::longValue))
+                       .orElse(0)
+                       .longValue() + 1;
     }
 }

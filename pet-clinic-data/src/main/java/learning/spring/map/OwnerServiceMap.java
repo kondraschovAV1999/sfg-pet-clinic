@@ -2,7 +2,9 @@ package learning.spring.map;
 
 import learning.spring.model.Owner;
 import learning.spring.services.OwnerService;
+import org.springframework.stereotype.Service;
 
+@Service
 public class OwnerServiceMap extends AbstractMapService<Owner, Long> implements OwnerService {
     /***
      *

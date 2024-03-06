@@ -2,15 +2,16 @@ package learning.spring.map;
 
 import learning.spring.model.Owner;
 import learning.spring.services.OwnerService;
+import learning.spring.services.PetService;
 import org.springframework.stereotype.Service;
 
 @Service
 public class OwnerServiceMap extends AbstractMapService<Owner, Long> implements OwnerService {
 
-    private final PetServiceMap petServiceMap;
+    private final PetService petService;
 
-    public OwnerServiceMap(PetServiceMap petServiceMap) {
-        this.petServiceMap = petServiceMap;
+    public OwnerServiceMap(PetService petService) {
+        this.petService = petService;
     }
 
     /***
@@ -37,7 +38,7 @@ public class OwnerServiceMap extends AbstractMapService<Owner, Long> implements 
         if (object.getPets() != null)
             object.getPets().stream()
                     .filter(pet -> pet.getId() == null)
-                    .forEach(petServiceMap::save);
+                    .forEach(petService::save);
 
         return super.save(object);
     }

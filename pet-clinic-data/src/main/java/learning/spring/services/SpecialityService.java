@@ -1,6 +1,6 @@
 package learning.spring.services;
 
-import learning.spring.model.Specialty;
+import learning.spring.model.Speciality;
 
-public interface SpecialityService extends CrudService<Specialty, Long> {
+public interface SpecialityService extends CrudService<Speciality, Long> {
 }

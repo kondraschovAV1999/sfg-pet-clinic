@@ -10,4 +10,9 @@ public class indexController {
 
         return "index";
     }
+
+    @RequestMapping({"/oups"})
+    public String error() {
+        return "not_implemented";
+    }
 }

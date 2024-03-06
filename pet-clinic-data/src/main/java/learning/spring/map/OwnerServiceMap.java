@@ -6,6 +6,13 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class OwnerServiceMap extends AbstractMapService<Owner, Long> implements OwnerService {
+
+    private final PetServiceMap petServiceMap;
+
+    public OwnerServiceMap(PetServiceMap petServiceMap) {
+        this.petServiceMap = petServiceMap;
+    }
+
     /***
      *
      * @param lastName
@@ -18,9 +25,20 @@ public class OwnerServiceMap extends AbstractMapService<Owner, Long> implements 
 
         var owner = map.values()
                 .stream()
-                .filter(o->o.getLastName().equals(lastName))
+                .filter(o -> o.getLastName().equals(lastName))
                 .findFirst();
         return owner.orElse(new Owner());
 
+    }
+
+    @Override
+    public Owner save(Owner object) {
+
+        if (object.getPets() != null)
+            object.getPets().stream()
+                    .filter(pet -> pet.getId() == null)
+                    .forEach(petServiceMap::save);
+
+        return super.save(object);
     }
 }

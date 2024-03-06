@@ -1,6 +1,7 @@
 package learning.spring.bootstrap;
 
 import learning.spring.model.Owner;
+import learning.spring.model.Pet;
 import learning.spring.model.PetType;
 import learning.spring.model.Vet;
 import learning.spring.services.OwnerService;
@@ -9,12 +10,13 @@ import learning.spring.services.VetService;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDate;
+
 @Component
 public class DataLoader implements CommandLineRunner {
 
     private final OwnerService ownerService;
     private final VetService vetService;
-
     private final PetTypeService petTypeService;
 
     public DataLoader(OwnerService ownerService, VetService vetService, PetTypeService petTypeService) {
@@ -29,24 +31,42 @@ public class DataLoader implements CommandLineRunner {
 
         PetType dog = new PetType();
         dog.setName("Dog");
-        PetType savedDogType = petTypeService.save(dog);
+        petTypeService.save(dog);
 
         PetType cat = new PetType();
         cat.setName("Cat");
-        PetType savedCatType = petTypeService.save(cat);
+        petTypeService.save(cat);
 
         Owner owner1 = new Owner();
         owner1.setFirstName("Michael");
         owner1.setLastName("Weston");
-
+        owner1.setAddress("123 Brickerel");
+        owner1.setCity("Miami");
+        owner1.setTelephone("1231231234");
         ownerService.save(owner1);
+
+        Pet mieksPet = new Pet();
+        mieksPet.setPetType(dog);
+        mieksPet.setOwner(owner1);
+        mieksPet.setBirthDate(LocalDate.now());
+        mieksPet.setName("Rosco");
+        owner1.getPets().add(mieksPet);
+
 
         Owner owner2 = new Owner();
         owner2.setFirstName("Fiona");
         owner2.setLastName("Glenanne");
-
+        owner2.setAddress("123 Brickerel");
+        owner2.setCity("Miami");
+        owner2.setTelephone("1231231234");
         ownerService.save(owner2);
 
+        Pet fionasPet = new Pet();
+        fionasPet.setPetType(cat);
+        fionasPet.setOwner(owner2);
+        fionasPet.setBirthDate(LocalDate.now());
+        fionasPet.setName("Lilo");
+        owner2.getPets().add(fionasPet);
         System.out.println("Loaded Owners....");
 
         Vet vet1 = new Vet();

@@ -1,4 +1,4 @@
-package learning.spring.map;
+package learning.spring.services.map;
 
 import learning.spring.model.PetType;
 import learning.spring.services.PetTypeService;

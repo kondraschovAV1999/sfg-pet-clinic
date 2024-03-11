@@ -1,4 +1,4 @@
-package learning.spring.map;
+package learning.spring.services.map;
 
 import learning.spring.model.Speciality;
 import learning.spring.services.SpecialityService;

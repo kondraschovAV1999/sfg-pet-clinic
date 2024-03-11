@@ -1,4 +1,4 @@
-package learning.spring.map;
+package learning.spring.services.map;
 
 import learning.spring.model.BaseEntity;
 import learning.spring.services.CrudService;

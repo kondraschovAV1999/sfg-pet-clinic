@@ -35,7 +35,9 @@ public class OwnerServiceMap extends AbstractMapService<Owner, Long> implements 
     @Override
     public Owner save(Owner object) {
 
-        if (object.getPets() != null)
+        if (object == null) throw new RuntimeException("Illegal argument for save method!");
+
+        if (!object.getPets().isEmpty())
             object.getPets().stream()
                     .filter(pet -> pet.getId() == null)
                     .forEach(petService::save);

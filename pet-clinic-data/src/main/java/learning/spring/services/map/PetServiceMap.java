@@ -16,6 +16,8 @@ public class PetServiceMap extends AbstractMapService<Pet, Long> implements PetS
     @Override
     public Pet save(Pet object) {
 
+        if (object == null) throw new RuntimeException("Illegal argument for save method!");
+
         if (object.getPetType() == null) throw new RuntimeException("Pet Type is required");
         if (object.getPetType().getId() == null)
             petTypeService.save(object.getPetType());

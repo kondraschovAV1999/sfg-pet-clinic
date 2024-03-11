@@ -15,6 +15,9 @@ public class VisitServiceMap extends AbstractMapService<Visit, Long> implements 
 
     public Visit save(Visit visit) {
 
+        if (visit == null || visit.getPet() == null || visit.getPet().getOwner() == null)
+            throw new RuntimeException("Illegal argument for save method!");
+
         if (visit.getPet().getOwner().getId() == null)
             ownerServiceMap.save(visit.getPet().getOwner());
 

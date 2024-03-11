@@ -17,6 +17,8 @@ public class VetServiceMap extends AbstractMapService<Vet, Long> implements VetS
     @Override
     public Vet save(Vet object) {
 
+        if (object == null) throw new RuntimeException("Illegal argument for save method!");
+
         if (object.getSpecialties() != null)
             object.getSpecialties().stream()
                     .filter(sp -> sp.getId() == null)

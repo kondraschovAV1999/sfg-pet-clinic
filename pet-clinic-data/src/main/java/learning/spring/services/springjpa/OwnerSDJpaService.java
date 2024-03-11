@@ -33,7 +33,7 @@ public class OwnerSDJpaService implements OwnerService {
 
     @Override
     public Owner findById(Long id) {
-        return ownerRepository.findById(id).orElseThrow();
+        return ownerRepository.findById(id).orElse(new Owner());
     }
 
     @Override

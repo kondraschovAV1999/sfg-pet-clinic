@@ -1,12 +1,22 @@
 package learning.spring.model;
 
+import jakarta.persistence.*;
+
 import java.time.LocalDate;
 
+@Entity
+@Table(name = "pets")
 public class Pet extends BaseEntity {
 
+    @Column(name = "pet_type")
+    @JoinColumn(name = "type_id")
     private PetType petType;
-    private Owner owner;
+    @ManyToOne
+    @JoinColumn(name = "owner_id")
+    private Owner owner; // owning side
+    @Column(name = "birth_date")
     private LocalDate birthDate;
+    @Column(name = "name")
     private String name;
 
     public String getName() {

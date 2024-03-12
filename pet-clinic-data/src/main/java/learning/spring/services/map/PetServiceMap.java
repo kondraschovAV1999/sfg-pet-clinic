@@ -3,9 +3,11 @@ package learning.spring.services.map;
 import learning.spring.model.Pet;
 import learning.spring.services.PetService;
 import learning.spring.services.PetTypeService;
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 
 @Service
+@Profile({"default", "map"})
 public class PetServiceMap extends AbstractMapService<Pet, Long> implements PetService {
     private final PetTypeService petTypeService;
 

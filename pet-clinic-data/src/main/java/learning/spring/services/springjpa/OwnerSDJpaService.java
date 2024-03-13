@@ -2,8 +2,6 @@ package learning.spring.services.springjpa;
 
 import learning.spring.model.Owner;
 import learning.spring.repositories.OwnerRepository;
-import learning.spring.repositories.PetRepository;
-import learning.spring.repositories.PetTypeRepository;
 import learning.spring.services.OwnerService;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
@@ -15,13 +13,9 @@ import java.util.Set;
 @Profile("springdatajpa")
 public class OwnerSDJpaService implements OwnerService {
     private final OwnerRepository ownerRepository;
-    private final PetRepository petRepository;
-    private final PetTypeRepository petTypeRepository;
 
-    public OwnerSDJpaService(OwnerRepository ownerRepository, PetRepository petRepository, PetTypeRepository petTypeRepository) {
+    public OwnerSDJpaService(OwnerRepository ownerRepository) {
         this.ownerRepository = ownerRepository;
-        this.petRepository = petRepository;
-        this.petTypeRepository = petTypeRepository;
     }
 
     @Override

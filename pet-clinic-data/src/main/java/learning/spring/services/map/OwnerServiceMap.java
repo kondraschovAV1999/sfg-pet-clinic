@@ -4,6 +4,8 @@ import learning.spring.model.Owner;
 import learning.spring.services.OwnerService;
 import learning.spring.services.PetService;
 import org.springframework.context.annotation.Profile;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -16,7 +18,7 @@ public class OwnerServiceMap extends AbstractMapService<Owner, Long> implements 
         this.petService = petService;
     }
 
-    /***
+    /**
      *
      * @param lastName
      * @return Owner class, if there is more than one object with the same last name,
@@ -33,6 +35,13 @@ public class OwnerServiceMap extends AbstractMapService<Owner, Long> implements 
         return owner.orElse(new Owner());
 
     }
+
+    @Override
+    public Page<Owner> findByLastNameContainingIgnoreCase(String lastName, Pageable pageable) {
+        //todo impl
+        throw new UnsupportedOperationException();
+    }
+
 
     @Override
     public Owner save(Owner object) {

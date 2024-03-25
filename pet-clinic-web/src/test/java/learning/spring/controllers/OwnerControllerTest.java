@@ -8,15 +8,21 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import static org.hamcrest.Matchers.hasSize;
 import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -48,20 +54,39 @@ class OwnerControllerTest {
     }
 
     @Test
-    void listOwners() throws Exception {
-
-        when(service.findAll()).thenReturn(owners);
-        mockMvc.perform(get("/owners"))
-                .andExpect(status().isOk())
-                .andExpect(view().name("owners/index"))
-                .andExpect(model().attribute("owners", hasSize(2)));
-    }
-
-    @Test
     void findOwners() throws Exception {
         mockMvc.perform(get("/owners/find"))
                 .andExpect(status().isOk())
-                .andExpect(view().name("not_implemented"));
+                .andExpect(view().name("owners/findOwners"))
+                .andExpect(model().attributeExists("owner"));
+        verifyNoInteractions(service);
+    }
+
+    @Test
+    void processFindFromReturnMany() throws Exception {
+        Pageable pageable = PageRequest.of(0, 5);
+        Page<Owner> paginated = new PageImpl<>(new ArrayList<>(owners), pageable, 2);
+        when(service.findByLastNameContainingIgnoreCase(anyString(), any(Pageable.class))).thenReturn(paginated);
+        mockMvc.perform(get("/owners"))
+                .andExpect(status().isOk())
+                .andExpect(view().name("owners/ownersList"))
+                .andExpect(model().attributeExists("currentPage"))
+                .andExpect(model().attributeExists("totalPages"))
+                .andExpect(model().attributeExists("totalItems"))
+                .andExpect(model().attribute("listOwners", hasSize(2)));
+    }
+
+    @Test
+    void processFindFromReturnOne() throws Exception {
+        Owner owner = new Owner();
+        owner.setId(1L);
+        Pageable pageable = PageRequest.of(0, 5);
+        Page<Owner> paginated = new PageImpl<>(List.of(owner), pageable, 1);
+        when(service.findByLastNameContainingIgnoreCase(
+                anyString(), any(Pageable.class))).thenReturn(paginated);
+        mockMvc.perform(get("/owners"))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(view().name("redirect:/owners/1"));
     }
 
     @Test

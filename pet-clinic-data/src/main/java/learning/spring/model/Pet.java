@@ -6,6 +6,7 @@ import lombok.*;
 import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.Set;
+
 @Setter
 @Getter
 @NoArgsConstructor
@@ -28,8 +29,13 @@ public class Pet extends BaseEntity {
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "pet")
     private Set<Visit> visits = new HashSet<>();
 
-    public void addVisit(Visit visit){
+    public void addVisit(Visit visit) {
         visits.add(visit);
         visit.setPet(this);
+    }
+
+    @Override
+    public String toString() {
+        return name;
     }
 }

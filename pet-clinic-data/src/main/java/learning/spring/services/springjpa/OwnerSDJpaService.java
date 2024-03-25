@@ -4,6 +4,8 @@ import learning.spring.model.Owner;
 import learning.spring.repositories.OwnerRepository;
 import learning.spring.services.OwnerService;
 import org.springframework.context.annotation.Profile;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.HashSet;
@@ -49,4 +51,10 @@ public class OwnerSDJpaService implements OwnerService {
     public Owner findByLastName(String lastName) {
         return ownerRepository.findByLastName(lastName);
     }
+
+    @Override
+    public Page<Owner> findByLastNameContainingIgnoreCase(String lastName, Pageable pageable) {
+        return ownerRepository.findByLastNameContainingIgnoreCase(lastName, pageable);
+    }
+
 }

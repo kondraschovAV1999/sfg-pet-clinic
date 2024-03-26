@@ -5,6 +5,7 @@ import lombok.*;
 
 import java.util.HashSet;
 import java.util.Set;
+
 @Setter
 @Getter
 @NoArgsConstructor
@@ -19,6 +20,7 @@ public class Owner extends Person {
     private String telephone;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "owner")
     private Set<Pet> pets = new HashSet<>();
+
     @Builder
     public Owner(String firstName, String lastName, String address, String city,
                  String telephone, Set<Pet> pets) {
@@ -29,8 +31,49 @@ public class Owner extends Person {
         this.pets = pets;
     }
 
-    public void addPet(Pet pet){
+    public void addPet(Pet pet) {
         pets.add(pet);
         pet.setOwner(this);
+    }
+
+    public void removePet(Pet pet) {
+        pets.removeIf(p -> p.getId().equals(pet.getId()));
+        pet.setOwner(null);
+    }
+
+    /**
+     * Return the Pet with the given name, or null if none found for this Owner.
+     *
+     * @param name to test
+     * @return a pet if pet name is already in use
+     */
+    public Pet getPet(String name, boolean ignoreNew) {
+        return pets.stream()
+                .filter(p -> p.getName() != null && p.getName().equalsIgnoreCase(name))
+                .findFirst()
+                .orElse(null);
+    }
+
+    /**
+     * Return the Pet with the given name, or null if none found for this Owner.
+     *
+     * @param name to test
+     * @return a pet if pet name is already in use
+     */
+    public Pet getPet(String name) {
+        return getPet(name, false);
+    }
+
+    /**
+     * Return the Pet with the given id, or null if none found for this Owner.
+     *
+     * @param id to test
+     * @return a pet if pet id is already in use
+     */
+    public Pet getPet(Long id) {
+        return pets.stream()
+                .filter(p -> !p.isNew() && p.getId().equals(id))
+                .findFirst()
+                .orElse(null);
     }
 }

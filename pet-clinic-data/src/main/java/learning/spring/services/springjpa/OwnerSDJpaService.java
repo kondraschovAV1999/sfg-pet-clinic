@@ -29,7 +29,8 @@ public class OwnerSDJpaService implements OwnerService {
 
     @Override
     public Owner findById(Long id) {
-        return ownerRepository.findById(id).orElse(new Owner());
+        return ownerRepository.findById(id).orElseThrow(() ->
+                new IllegalArgumentException("Owner ID not found: " + id));
     }
 
     @Override

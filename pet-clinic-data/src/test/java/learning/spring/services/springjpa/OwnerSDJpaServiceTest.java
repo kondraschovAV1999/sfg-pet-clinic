@@ -59,8 +59,9 @@ class OwnerSDJpaServiceTest {
     void findByIdNotFound() {
         when(ownerRepository.findById(anyLong())).thenReturn(Optional.empty());
 
-        Owner owner = service.findById(2L);
-        assertNull(owner.getId());
+        assertThrows(IllegalArgumentException.class,
+                () -> service.findById(2L));
+
     }
 
     @Test

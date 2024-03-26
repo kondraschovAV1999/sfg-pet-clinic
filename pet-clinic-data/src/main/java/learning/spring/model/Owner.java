@@ -1,7 +1,11 @@
 package learning.spring.model;
 
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import org.springframework.util.Assert;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -75,5 +79,22 @@ public class Owner extends Person {
                 .filter(p -> !p.isNew() && p.getId().equals(id))
                 .findFirst()
                 .orElse(null);
+    }
+
+    /**
+     * Adds the given {@link Visit} to the {@link Pet} with the given identifier.
+     * @param petId the identifier of the {@link Pet}, must not be {@literal null}.
+     * @param visit the visit to add, must not be {@literal null}.
+     */
+    public void addVisit(Long petId, Visit visit) {
+
+        Assert.notNull(petId, "Pet identifier must not be null!");
+        Assert.notNull(visit, "Visit must not be null!");
+
+        Pet pet = getPet(petId);
+
+        Assert.notNull(pet, "Invalid Pet identifier!");
+
+        pet.addVisit(visit);
     }
 }

@@ -34,6 +34,11 @@ public class Pet extends BaseEntity {
         visit.setPet(this);
     }
 
+    public void removeVisit(Visit visit) {
+        visits.removeIf(v -> v.getId().equals(visit.getId()));
+        visit.setPet(null);
+    }
+
     @Override
     public String toString() {
         return name;

@@ -1,5 +1,6 @@
 package learning.spring.controllers;
 
+import jakarta.validation.Valid;
 import learning.spring.model.Owner;
 import learning.spring.services.OwnerService;
 import org.springframework.data.domain.Page;
@@ -10,6 +11,7 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
 
@@ -18,6 +20,7 @@ import java.util.List;
 public class OwnerController {
 
     private final OwnerService ownerService;
+    private static final String VIEWS_OWNER_CREATE_OR_UPDATE_FORM = "owners/createOrUpdateOwnerForm";
 
     public OwnerController(OwnerService ownerService) {
         this.ownerService = ownerService;
@@ -72,6 +75,46 @@ public class OwnerController {
         model.addAttribute("totalItems", paginated.getTotalElements());
         model.addAttribute("listOwners", listOwners);
         return "owners/ownersList";
+    }
+
+    @GetMapping("new")
+    public String initCreationForm(Model model) {
+        model.addAttribute("owner", new Owner());
+        return VIEWS_OWNER_CREATE_OR_UPDATE_FORM;
+    }
+
+    @PostMapping("new")
+    public String processCreationForm(@Valid Owner owner, BindingResult result,
+                                      RedirectAttributes redirectAttributes) {
+        if (result.hasErrors()) {
+            redirectAttributes.addFlashAttribute("error", "There was an error in creating the owner.");
+            return VIEWS_OWNER_CREATE_OR_UPDATE_FORM;
+        }
+
+        var savedOwner = ownerService.save(owner);
+        redirectAttributes.addFlashAttribute("message", "New Owner Created");
+        return "redirect:/owners/" + savedOwner.getId();
+    }
+
+    @GetMapping("{ownerId}/edit")
+    public String initUpdateOwnerForm(@PathVariable("ownerId") Long ownerId, Model model) {
+        model.addAttribute("owner", ownerService.findById(ownerId));
+        return VIEWS_OWNER_CREATE_OR_UPDATE_FORM;
+    }
+
+    @PostMapping("{ownerId}/edit")
+    public String processUpdateOwnerForm(@Valid Owner owner, BindingResult result,
+                                         @PathVariable("ownerId") Long ownerId,
+                                         RedirectAttributes redirectAttributes) {
+        if (result.hasErrors()) {
+            redirectAttributes.addFlashAttribute("error", "There was an error in updating the owner.");
+            return VIEWS_OWNER_CREATE_OR_UPDATE_FORM;
+        }
+
+        owner.setId(ownerId);
+        Owner savedOwner = ownerService.save(owner);
+        redirectAttributes.addFlashAttribute("message", "Owner Values Updated");
+        return "redirect:/owners/" + savedOwner.getId();
     }
 
     @GetMapping("{ownerId}")

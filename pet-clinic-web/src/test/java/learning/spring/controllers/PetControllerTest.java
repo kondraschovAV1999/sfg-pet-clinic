@@ -14,6 +14,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
+import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -39,20 +40,39 @@ class PetControllerTest {
     private Owner owner;
     private Set<PetType> petTypes;
 
+    private Owner createOwner(Long id) {
+
+        Pet snowball = Pet.builder()
+                .id(1L)
+                .birthDate(LocalDate.now())
+                .name("snowball")
+                .visits(new HashSet<>())
+                .petType(PetType.builder()
+                        .id(1L)
+                        .name("dog")
+                        .build()).build();
+
+        Owner mike = Owner.builder()
+                .id(id)
+                .firstName("Mike")
+                .lastName("Smith")
+                .city("New York")
+                .address("Time Square")
+                .telephone("1234567891")
+                .pets(new HashSet<>())
+                .build();
+
+        mike.addPet(snowball);
+
+        return mike;
+    }
+
     @BeforeEach
     void setUp() {
-        owner = new Owner();
-        owner.setId(1L);
+        owner = createOwner(1L);
         petTypes = new HashSet<>();
-        PetType dog = new PetType("dog");
-        dog.setId(1L);
-        PetType cat = new PetType("cat");
-        cat.setId(2L);
-        petTypes.add(dog);
-        petTypes.add(cat);
-        Pet pet = new Pet();
-        pet.setId(1L);
-        owner.addPet(pet);
+        petTypes.add(PetType.builder().name("dog").id(1L).build());
+        petTypes.add(PetType.builder().name("cat").id(2L).build());
 
         mockMvc = MockMvcBuilders.standaloneSetup(petController).build();
     }
@@ -74,7 +94,8 @@ class PetControllerTest {
         when(ownerService.findById(anyLong())).thenReturn(owner);
         when(ownerService.save(any(Owner.class))).thenReturn(owner);
 
-        mockMvc.perform(post("/owners/%d/pets/new".formatted(owner.getId())))
+        mockMvc.perform(post("/owners/%d/pets/new".formatted(owner.getId()))
+                        .flashAttr("pet", owner.getPet(1L)))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(view().name("redirect:/owners/1"));
         verify(ownerService).save(any(Owner.class));
@@ -100,7 +121,8 @@ class PetControllerTest {
         when(ownerService.save(any(Owner.class))).thenReturn(owner);
 
         mockMvc.perform(post("/owners/%d/pets/%d/edit"
-                        .formatted(owner.getId(), 1L)))
+                        .formatted(owner.getId(), 1L))
+                        .flashAttr("pet", owner.getPet(1L)))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(view().name("redirect:/owners/1"));
         verify(ownerService).save(any(Owner.class));

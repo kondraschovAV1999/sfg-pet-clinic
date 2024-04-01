@@ -17,9 +17,9 @@ class PetServiceMapTest extends AbstractMapServiceTest<Pet, Long>{
         MockitoAnnotations.openMocks(this);
         crudService = new PetServiceMap(petTypeService);
         id = 1L;
-        entity = Pet.builder().petType(new PetType("dog")).build();
+        entity = Pet.builder().petType(PetType.builder().name("dog").build()).build();
 
-        Pet pet = Pet.builder().petType(new PetType("cat")).build();
+        Pet pet = Pet.builder().petType(PetType.builder().name("cat").build()).build();
         pet.setId(id);
         crudService.save(pet);
     }

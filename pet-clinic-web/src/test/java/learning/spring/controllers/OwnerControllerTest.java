@@ -1,6 +1,8 @@
 package learning.spring.controllers;
 
 import learning.spring.model.Owner;
+import learning.spring.model.Pet;
+import learning.spring.model.PetType;
 import learning.spring.services.OwnerService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -15,6 +17,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -39,15 +42,38 @@ class OwnerControllerTest {
 
     private MockMvc mockMvc;
 
+    private Owner createOwner(Long id) {
+
+        Pet snowball = Pet.builder()
+                .id(1L)
+                .birthDate(LocalDate.now())
+                .name("snowball")
+                .visits(new HashSet<>())
+                .petType(PetType.builder()
+                        .id(1L)
+                        .name("dog")
+                        .build()).build();
+
+        Owner mike = Owner.builder()
+                .id(id)
+                .firstName("Mike")
+                .lastName("Smith")
+                .city("New York")
+                .address("Time Square")
+                .telephone("1234567891")
+                .pets(new HashSet<>())
+                .build();
+
+        mike.addPet(snowball);
+
+        return mike;
+    }
+
     @BeforeEach
     void setUp() {
         owners = new HashSet<>();
-        Owner owner1 = new Owner();
-        owner1.setId(1L);
-        Owner owner2 = new Owner();
-        owner2.setId(2L);
-        owners.add(owner1);
-        owners.add(owner2);
+        owners.add(createOwner(1L));
+        owners.add(createOwner(2L));
 
         mockMvc = MockMvcBuilders.
                 standaloneSetup(controller)
@@ -117,11 +143,11 @@ class OwnerControllerTest {
     @Test
     void processCreationForm() throws Exception {
         Long id = 1L;
-        Owner owner = new Owner();
-        owner.setId(id);
+        Owner owner = createOwner(id);
         when(service.save(any(Owner.class))).thenReturn(owner);
 
-        mockMvc.perform(post("/owners/new"))
+        mockMvc.perform(post("/owners/new")
+                        .flashAttr("owner", owner))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(view().name("redirect:/owners/%d".formatted(id)));
     }
@@ -129,8 +155,7 @@ class OwnerControllerTest {
     @Test
     void initUpdateForm() throws Exception {
         Long id = 1L;
-        Owner owner = new Owner();
-        owner.setId(id);
+        Owner owner = createOwner(id);
         when(service.findById(anyLong())).thenReturn(owner);
 
         mockMvc.perform(get("/owners/%d/edit".formatted(id)))
@@ -142,11 +167,11 @@ class OwnerControllerTest {
     @Test
     void processUpdateOwnerForm() throws Exception {
         Long id = 1L;
-        Owner owner = new Owner();
-        owner.setId(id);
+        Owner owner = createOwner(id);
         when(service.save(any(Owner.class))).thenReturn(owner);
 
-        mockMvc.perform(post("/owners/%d/edit".formatted(id)))
+        mockMvc.perform(post("/owners/%d/edit".formatted(id))
+                        .flashAttr("owner", owner))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(view().name("redirect:/owners/1"));
 

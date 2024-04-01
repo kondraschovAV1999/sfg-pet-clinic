@@ -1,6 +1,9 @@
 package learning.spring.model;
 
 import jakarta.persistence.*;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.Digits;
+import jakarta.validation.constraints.NotBlank;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -17,18 +20,25 @@ import java.util.Set;
 @Table(name = "owners")
 public class Owner extends Person {
     @Column(name = "address")
+    @NotBlank
     private String address;
+
     @Column(name = "city")
+    @NotBlank
     private String city;
+
     @Column(name = "telephone")
+    @NotBlank
+    @Digits(fraction = 0, integer = 10)
     private String telephone;
+
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "owner")
+    @Valid
     private Set<Pet> pets = new HashSet<>();
 
     @Builder
-    public Owner(String firstName, String lastName, String address, String city,
-                 String telephone, Set<Pet> pets) {
-        super(firstName, lastName);
+    public Owner(Long id, String firstName, String lastName, String address, String city, String telephone, Set<Pet> pets) {
+        super(id, firstName, lastName);
         this.address = address;
         this.city = city;
         this.telephone = telephone;
@@ -83,6 +93,7 @@ public class Owner extends Person {
 
     /**
      * Adds the given {@link Visit} to the {@link Pet} with the given identifier.
+     *
      * @param petId the identifier of the {@link Pet}, must not be {@literal null}.
      * @param visit the visit to add, must not be {@literal null}.
      */

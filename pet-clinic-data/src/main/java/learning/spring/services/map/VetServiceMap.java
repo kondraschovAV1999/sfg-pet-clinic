@@ -4,6 +4,9 @@ import learning.spring.model.Vet;
 import learning.spring.services.SpecialityService;
 import learning.spring.services.VetService;
 import org.springframework.context.annotation.Profile;
+import org.springframework.dao.DataAccessException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -27,5 +30,10 @@ public class VetServiceMap extends AbstractMapService<Vet, Long> implements VetS
                     .forEach(specialityService::save);
 
         return super.save(object);
+    }
+
+    @Override
+    public Page<Vet> findAll(Pageable pageable) throws DataAccessException {
+        throw new UnsupportedOperationException();
     }
 }
